@@ -61,8 +61,6 @@ fn main() {
                    //println!("letter is {}",groupcharacter);
                    prioSum_pergroup = prioSum_pergroup + calcPrio(groupcharacter);
                 }
-                
-
 
 
             }
