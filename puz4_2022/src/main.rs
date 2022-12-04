@@ -31,7 +31,7 @@ fn main() {
 fn parse_line(line: &String) -> Vec<i32>{
     //split into numbers
     let v: Vec<&str> = line.split(|c| c == ',' || c == '-').collect();
-    //return as vctor containing i32
+    //return as vector containing i32
     let V = v.iter().map(|c| c.parse().unwrap()).collect();
     return V;
 }
@@ -45,9 +45,9 @@ fn is_fully_contained(v: &Vec<i32>) -> bool{
 fn is_any_overlap(v: &Vec<i32>) -> bool{
     let sections1 = &v[..2];
     let sections2 = &v[2..];
-    //is there no overlap? entire range1 below or entire range1 above?
-    let overlap:bool = (sections1[1]<sections2[0] || sections2[1]<sections1[0]);
-    return !overlap;
+    //is there any overlap? entire range1 below or entire range1 above?
+    let overlap:bool = !(sections1[1]<sections2[0] || sections2[1]<sections1[0]);
+    return overlap;
 }
 
 // The output is wrapped in a Result to allow matching on errors
