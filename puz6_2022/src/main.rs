@@ -8,20 +8,22 @@ fn main() {
     if let Ok(lines) = read_lines("./input.txt") {
         for line in lines {
             if let Ok(s) = line {
+
               let charlist = s.chars();
-              //let mut tmp_charlist = String::from("____");  // <---- for first assignment
-              let mut tmp_charlist = String::from("______________"); // <------ for second assignment
+              let mut unique_sequence = String::new();
               let mut index: i32 = 0;
+              let sequence_length:usize = 14;//4 for part 1, 14 for part 2
 
-              //move through the characters in this list
+              //move through the characters in this list. Build a unique sequence
               for character in charlist{
-                  tmp_charlist.insert(0,character);
-                  tmp_charlist.pop();
-
-                  //check if all different
-                  let unique:bool = check_unique(&tmp_charlist);            
-                  if (unique == true){
-                    println!("The list of characters: {:?}",tmp_charlist);
+                  unique_sequence.insert(0,character);                                          //insert the new character
+                  unique_sequence.truncate(sequence_length);                                    //the unique sequence can never be longer than sequence_length characters
+                  let mut char_vec: Vec<char> = unique_sequence.chars().collect::<Vec<char>>(); //turn it into a vector of character which has the sort() and dedup() functions
+                  char_vec.sort();                                                              //sort the characters: required for deduplication.
+                  char_vec.dedup();                                                             //deduplicate the characters.
+                  //check the length: if we reached sequence_length, we have succeeded.
+                  if (char_vec.len()==sequence_length){
+                    println!("The list of characters: {:?}",unique_sequence);
                     println!("The index: {:?}",index+1);
                     break;
                   }
@@ -33,19 +35,6 @@ fn main() {
     else{
         println!("Error reading file");
     }
-}
-
-fn check_unique(tmp_charlist: &String) -> bool{
-    //return true if all unique
-    let mut unique = true;
-    let charlist = tmp_charlist.chars();
-    for character in charlist{
-        let nmatch = tmp_charlist.matches(character).count();
-        if (nmatch > 1 || tmp_charlist.contains('_')){
-            unique = false;
-        }
-    }
-    return unique;
 }
 
 // The output is wrapped in a Result to allow matching on errors
