@@ -1,1 +1,0 @@
-C:\Users\s135669\OneDrive\ -\ TU\ Eindhoven\Documents\Privé\adventofcode\puz2_2022\target\debug\hello_AOC.exe: C:\Users\s135669\OneDrive\ -\ TU\ Eindhoven\Documents\Privé\adventofcode\puz2_2022\src\main.rs
