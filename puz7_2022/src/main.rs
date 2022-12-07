@@ -56,9 +56,7 @@ fn main() {
         //part 1 find als dirs with <10k size
         let mut sumsizes = 0;
         for dir in dirsizes.iter(){
-            if dir.1<&100000 && dir.1!=&0{
-                //println!("dirsize: {:?}",dir.1);
-                //println!("dir: {:?}",dir.0.join("/"));
+            if *dir.1<100000 && *dir.1!=0{
                 sumsizes+=dir.1;
             }  
         }
