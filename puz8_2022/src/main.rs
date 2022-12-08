@@ -19,6 +19,8 @@ fn main() {
         }
 
         let array = Array2D::from_rows(&nested_vector);
+
+        //part 1
         let mut numhidden:usize = 0;
         let totaltrees:usize = array.num_rows()*array.num_columns();
 
@@ -30,8 +32,8 @@ fn main() {
                 let lefthigher  = array.row_iter(rownum).enumerate().any(|(i,c)| c>=&currentTree && i<colnum);
                 let righthigher = array.row_iter(rownum).enumerate().any(|(i,c)| c>=&currentTree && i>colnum);
                 //check trees to the left and right: are any higher or same?
-                let tophigher    = array.column_iter(colnum).enumerate().any(|(i,c)| c>=&currentTree && i<colnum);
-                let bottomhigher = array.column_iter(colnum).enumerate().any(|(i,c)| c>=&currentTree && i>colnum);
+                let tophigher    = array.column_iter(colnum).enumerate().any(|(i,c)| c>=&currentTree && i<rownum);
+                let bottomhigher = array.column_iter(colnum).enumerate().any(|(i,c)| c>=&currentTree && i>rownum);
 
                 if(lefthigher&&righthigher&&tophigher&&bottomhigher){
                     numhidden+=1;
@@ -43,13 +45,14 @@ fn main() {
         println!("total number of trees = {:?}",totaltrees);
         println!("number visible trees = {:?}",totaltrees-numhidden);
 
+        //part 2
+
+
     }
     else{
         println!("Error reading file");
     }
 }
-
-
 
 // The output is wrapped in a Result to allow matching on errors
 // Returns an Iterator to the Reader of the lines of the file.
