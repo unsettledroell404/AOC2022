@@ -25,33 +25,27 @@ fn main() {
             ('R',(1,0)),
         ]);
 
-        println!("{:?}",current_tail_location);
-
         for line in lines {
             if let Ok(s) = line{
-                let nsteps = s.chars().nth(2).unwrap().to_digit(10).unwrap();
-                let direction = s.chars().nth(0).unwrap();
-
-                println!("to walk {:} to {:}",nsteps,direction);
+                let vec: Vec<&str> = s.split(" ").collect();
+                let nsteps: i32 = vec[1].parse().unwrap();
+                let direction = vec[0].chars().nth(0).unwrap();
 
                 //loop nsteps times
                 for n in 1..nsteps+1{
                     //store the current location of the head
                     let last_head_location = current_head_location;
                     //get the new head position
-                    current_head_location.0 = current_head_location.0 + direction_map.get(&direction).unwrap().0;
-                    current_head_location.1 = current_head_location.1 + direction_map.get(&direction).unwrap().1;
+                    current_head_location = (current_head_location.0 + direction_map.get(&direction).unwrap().0 , current_head_location.1 + direction_map.get(&direction).unwrap().1);
                     //add the visited head location
                     head_locations.insert(current_head_location);
-                    //work out where the tail shoud be moving. If it is not adjacent, it should move to the previous locaiton of the head
+                    //work out if and where the tail shoud be moving. If it is not adjacent, it should move to the previous locaiton of the head
                     // sqrt((xa-xb)^2 + (ya-yb)^2)>sqrt(2)+e
-                    if (((current_head_location.0-current_tail_location.0) as f64).powf(2.0) + ((current_head_location.1-current_tail_location.1) as f64).powf(2.0)).powf(0.5)  > 1.42{
+                    if (((current_head_location.0-current_tail_location.0)).pow(2) + ((current_head_location.1-current_tail_location.1)).pow(2)) > 2{
                         current_tail_location = last_head_location;
                         tail_locations.insert(current_tail_location);
                     }
-                    println!("{:?}",current_tail_location);
                 }
-                //println!("{:}",nstepsmap.get
             }
         }
         println!("Number of spots the head visited is {:?}",head_locations.len());
