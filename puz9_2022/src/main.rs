@@ -33,20 +33,19 @@ fn main() {
 
                 //loop nsteps times
                 for n in 1..=nsteps{
-                    //store the current location of the head
-                    let mut last_knot_locations = current_knot_locations.clone();
                     //get the new head position
                     current_knot_locations[0] = (current_knot_locations[0].0 + direction_map.get(&direction).unwrap().0 , current_knot_locations[0].1 + direction_map.get(&direction).unwrap().1);
                     head_locations.insert(current_knot_locations[0]);
                     //iterate over the knots
                     for i in 1..rope_length{
-                        //work out if and where the tail shoud be moving. If it is not adjacent, it should move to the previous location of the knot in front of it
-                        // sqrt((xa-xb)^2 + (ya-yb)^2)>sqrt(2)+e
-                       if (((current_knot_locations[i-1].0-current_knot_locations[i].0)).pow(2) + ((current_knot_locations[i-1].1-current_knot_locations[i].1)).pow(2)) > 2{     
-                            
-                            current_knot_locations[i] = last_knot_locations[i-1]; //move the knot
-                            last_knot_locations[i] = current_knot_locations[i];   //save the location of that knot
-                            //if it is the tail that just moved, do this
+                       //work out if and where the tail shoud be moving.
+                       // sqrt((xa-xb)^2 + (ya-yb)^2)>sqrt(2)+e
+                       let dx = current_knot_locations[i-1].0-current_knot_locations[i].0;
+                       let dy = current_knot_locations[i-1].1-current_knot_locations[i].1;
+                       if dx.pow(2) + dy.pow(2) > 2{     
+                            //moving: copy pasta from Rick
+                            //if the distance is changed, it should move in the same direction as the head. But for some reason with at most 1 step?
+                            current_knot_locations[i] = (current_knot_locations[i].0 + dx.signum() , current_knot_locations[i].1 + dy.signum());
                             if i==rope_length-1{
                                 tail_locations.insert(current_knot_locations[i]);
                             }
