@@ -9,13 +9,13 @@ fn main() {
     if let Ok(lines) = read_lines("./input.txt") {
 
         //create head location map and add the initial point
-        let mut head_locations: HashSet<(i32,i32)> = HashSet::new();
-        let mut current_head_location: (i32,i32) = (0,0);
-        head_locations.insert(current_head_location);
-
         let mut tail_locations: HashSet<(i32,i32)> = HashSet::new();
-        let mut current_tail_location: (i32,i32) = (0,0);
-        tail_locations.insert(current_tail_location);
+        let rope_length  = 10;//2 for assignment 1, 10 for assignment 2
+        let mut current_knot_locations: Vec<(i32,i32)> = vec![(0,0);rope_length];
+        tail_locations.insert(current_knot_locations[rope_length-1]);
+
+        let mut head_locations: HashSet<(i32,i32)> = HashSet::new();
+        head_locations.insert(current_knot_locations[0]);
 
         //hash map mapping the direction key to +-xy
         let direction_map: HashMap<char,(i32,i32)> = HashMap::from([
@@ -34,16 +34,21 @@ fn main() {
                 //loop nsteps times
                 for n in 1..nsteps+1{
                     //store the current location of the head
-                    let last_head_location = current_head_location;
+                    let last_knot_locations = current_knot_locations.clone();
                     //get the new head position
-                    current_head_location = (current_head_location.0 + direction_map.get(&direction).unwrap().0 , current_head_location.1 + direction_map.get(&direction).unwrap().1);
-                    //add the visited head location
-                    head_locations.insert(current_head_location);
-                    //work out if and where the tail shoud be moving. If it is not adjacent, it should move to the previous locaiton of the head
-                    // sqrt((xa-xb)^2 + (ya-yb)^2)>sqrt(2)+e
-                    if (((current_head_location.0-current_tail_location.0)).pow(2) + ((current_head_location.1-current_tail_location.1)).pow(2)) > 2{
-                        current_tail_location = last_head_location;
-                        tail_locations.insert(current_tail_location);
+                    current_knot_locations[0] = (current_knot_locations[0].0 + direction_map.get(&direction).unwrap().0 , current_knot_locations[0].1 + direction_map.get(&direction).unwrap().1);
+                    head_locations.insert(current_knot_locations[0]);
+                    //iterate over the knots
+                    for i in 1..rope_length{
+                        //work out if and where the tail shoud be moving. If it is not adjacent, it should move to the previous locaiton of the head
+                        // sqrt((xa-xb)^2 + (ya-yb)^2)>sqrt(2)+e
+                        if (((current_knot_locations[i-1].0-current_knot_locations[i].0)).pow(2) + ((current_knot_locations[i-1].1-current_knot_locations[i].1)).pow(2)) > 2{
+                            current_knot_locations[i] = last_knot_locations[i-1];
+                            //if it is the tail that just moved, do this
+                            if i==rope_length-1{
+                                tail_locations.insert(current_knot_locations[i]);
+                            }
+                        }
                     }
                 }
             }
