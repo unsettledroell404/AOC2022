@@ -6,7 +6,7 @@ use array2d::Array2D;
 
 fn main() {
     //Check if file exists
-    if let Ok(lines) = read_lines("./input2.txt") {
+    if let Ok(lines) = read_lines("./input.txt") {
         //build the entire matrix
         let mut nested_vector:Vec<Vec<u8>> = Vec::new();
         let mut linenum:usize = 0;
@@ -56,7 +56,6 @@ fn main() {
                 let top_to_bottom    =  find_score(array.column_iter(colnum).enumerate().position(|(i,c)| c>=&currentTree && i>rownum),rownum,array.num_rows()-rownum-1);
                 let bottom_to_top    =  find_score(array.column_iter(colnum).enumerate().position(|(i,c)| c>=&currentTree && i<rownum),rownum,rownum);//this iterates the wrong way - rev not implemented
                 let totalscore = left_to_right*right_to_left*top_to_bottom*bottom_to_top;
-                println!("scores = {left_to_right} {right_to_left} {top_to_bottom} {bottom_to_top}");
                 if(totalscore>highestTotalScore){
                     highestTotalScore=totalscore;
                 }
@@ -65,17 +64,49 @@ fn main() {
         println!("Incorrect: Highest scenic view = {:?}",highestTotalScore);
 
         //part 2 simpler method:
-        //????
+        let mut highest_scenic_view: i32 = 0;
         for rownum in 1..array.num_rows()-1{
             for colnum in 1..array.num_columns()-1{
-                //check east
-                for row in row_iter(rownum){
-                    for col in col_iter(colnum){
+                let mut scenic_east: i32 = 0;
+                let mut scenic_west: i32 = 0;
+                let mut scenic_north: i32 = 0;
+                let mut scenic_south: i32 = 0;
 
+                //check walking east
+                for col_other in colnum+1..array.num_columns(){
+                    scenic_east+=1;
+                    if array[(rownum,col_other)]>=array[(rownum,colnum)]{
+                        break;
                     }
+                }
+                //check walking west
+                for col_other in (0..=colnum-1).rev(){
+                    scenic_west+=1;
+                    if array[(rownum,col_other)]>=array[(rownum,colnum)]{
+                        break;
+                    }
+                }
+                //check walking south
+                for row_other in rownum+1..array.num_rows(){
+                    scenic_south+=1;
+                    if array[(row_other,colnum)]>=array[(rownum,colnum)]{
+                        break;
+                    }
+                }
+                //check walking north
+                for row_other in (0..=rownum-1).rev(){
+                    scenic_north+=1;
+                    if array[(row_other,colnum)]>=array[(rownum,colnum)]{
+                        break;
+                    }
+                }
+                let scenic_view = scenic_south*scenic_north*scenic_east*scenic_west;
+                if highest_scenic_view<scenic_view{
+                    highest_scenic_view=scenic_view;
                 }
             }
         }
+        println!("Correct scenic view score: {:}",highest_scenic_view);
     }
     else{
         println!("Error reading file");
