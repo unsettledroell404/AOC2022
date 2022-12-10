@@ -1,9 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\SRC",
+    "\\src",
     "\\target"
   ],
-  "SelectedNode": "\\SRC\\main.rs",
+  "SelectedNode": "\\src\\main.rs",
   "PreviewInSolutionExplorer": false
 }
