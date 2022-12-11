@@ -99,7 +99,7 @@ fn main() {
             //monke throws away all items each time
             while monkevec[monke_now].items.len() > 0{            
                 let (monke_to, monke_item) = monkevec[monke_now].process();
-                monkevec[monke_to].items.push(monke_item%prod);
+                monkevec[monke_to].items.push(monke_item%prod);//<---here is the magic part to stop it from overflowing
             }
         }
     }
