@@ -2,3 +2,7 @@
 name = "hello_AOC"
 version = "0.1.0"
 authors = ["Roel"]
+
+[dependencies]
+eval = "^0.4"
+evalexpr = "8.1.0"

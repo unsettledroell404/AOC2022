@@ -1,4 +1,10 @@
 use std::collections::BinaryHeap;
+//use eval::{eval,to_value};
+use std::fs::File;
+use std::io::{self, BufRead};
+use std::path::Path;
+extern crate evalexpr;
+use evalexpr::*;
 
 //declare monke struct
 struct Monke {
@@ -14,7 +20,7 @@ struct Monke {
 //monke has an implementation
 impl Monke {
     //constructor
-    fn new_monke(items: Vec::<i64>,operation: char, operation_value: i64,divisor: i64,true_monke: usize,false_monke: usize) -> Self{
+    fn new_monke(items: Vec::<i64>,operation: char, operation_value: i64, divisor: i64,true_monke: usize,false_monke: usize) -> Self{
         Self{
             items: items,
             operation: operation,
@@ -28,8 +34,8 @@ impl Monke {
 
     //do a monke, return the monkey nummer and item value 
     fn process(&mut self) -> (usize,i64) {
-        //the item's worry level is changed
         let mut tmp_item = self.items[0];
+        //the item's worry level is changed
         if self.operation == '+'{
             if self.operation_value == 0{
                 tmp_item = tmp_item + tmp_item;
@@ -51,43 +57,81 @@ impl Monke {
 
         //test to which monkey we should throw
         //becomes funny wihth 64 .. test if it is very close to whole number
+        self.items.remove(0);
+        self.inspections +=1;
         if tmp_item % self.divisor == 0{
             //truemonke
             //monke ditched the item! pop first
-            self.items.remove(0);
-            self.inspections +=1;
             return(self.true_monke, tmp_item)
         }
         else{
             //falsemonke
             //monke ditched the item! pop first
-            self.items.remove(0);
-            self.inspections +=1;
             return(self.false_monke, tmp_item)
         }
-
     }
 }
 
 fn main() {
-    //build example monkes
-    //let monke0 = Monke::new_monke(vec![79,98],'*',19,23,2,3);
-    //let monke1 = Monke::new_monke(vec![54, 65, 75, 74],'+',6,19,2,0);
-    //let monke2 = Monke::new_monke(vec![79, 60, 97],'*',0,13,1,3); //old represented by 0
-    //let monke3 = Monke::new_monke(vec![74],'+',3,17,0,1);
-    //let mut monkevec = vec![monke0,monke1,monke2,monke3];
 
-    //do a trick to keep the worry low for part 2
-    //build real input monkeys
-    let mut monke0 = Monke::new_monke(vec![56, 52, 58, 96, 70, 75, 72],'*',17,11,2,3);
-    let mut monke1 = Monke::new_monke(vec![75, 58, 86, 80, 55, 81],'+',7,3,6,5);
-    let mut monke2 = Monke::new_monke(vec![73, 68, 73, 90],'*',0,5,1,7);
-    let mut monke3 = Monke::new_monke(vec![72, 89, 55, 51, 59],'+',1,7,2,7);
-    let mut monke4 = Monke::new_monke(vec![76, 76, 91],'*',3,19,0,3);
-    let mut monke5 = Monke::new_monke(vec![88],'+',4,2,6,4);
-    let mut monke6 = Monke::new_monke(vec![64, 63, 56, 50, 77, 55, 55, 86],'+',8,13,4,0);
-    let mut monke7 = Monke::new_monke(vec![79, 58],'+',6,17,1,5);
-    let mut monkevec = vec![monke0,monke1,monke2,monke3,monke4,monke5,monke6,monke7];
+    let mut monkevec: Vec<Monke> = Vec::new();
+    if let Ok(lines) = read_lines("./input.txt") {
+        //placeholders to make monke
+        let mut items: Vec::<i64> = Vec::new();
+        let mut operation: char = 'x';
+        let mut operation_value: i64 = 0;
+        let mut divisor: i64 = 1;
+        let mut true_monke: usize = 0;
+        let mut false_monke: usize = 0;
+
+        for line in lines {
+            if let Ok(s) = line{
+                let v: Vec<&str> = s.split(": ").collect();
+                    
+                    if v[0]=="Monkey"{
+                        //new monke
+                        //nothing
+                    }
+                    else if v[0] == "  Starting items" 
+                    {
+                        items = v[1].split(", ").map(|v| v.parse::<i64>().unwrap()).collect();
+                    }
+                    else if v[0] == "  Operation" 
+                    {
+                        let tmp: Vec<&str> = v[1].split(" ").collect();
+                        println!("{:?}",tmp);
+                        operation = tmp[3].chars().nth(0).unwrap();
+                        println!("{:?}",operation);
+                        if tmp[4] == "old"{
+                            operation_value = 0;
+                        }else{
+                            operation_value = tmp[4].parse::<i64>().unwrap();
+                        }
+                    }
+                    else if v[0] == "  Test" 
+                    {
+                        let tmp: Vec<&str> = v[1].split(" by ").collect();
+                        divisor = tmp[1].parse::<i64>().unwrap();
+                    }
+                    else if v[0] == "    If true" 
+                    {
+                        let tmp: Vec<&str> = v[1].split(" monkey ").collect();
+                        true_monke = tmp[1].parse::<usize>().unwrap();
+                    }
+                    else if v[0] == "    If false" 
+                    {
+                        let tmp: Vec<&str> = v[1].split(" monkey ").collect();
+                        false_monke = tmp[1].parse::<usize>().unwrap();
+
+                        //done building monke: add to the list
+                        let monke = Monke::new_monke(items.clone(),operation,operation_value,divisor,true_monke,false_monke);
+                        monkevec.push(monke);
+                    }
+            }
+        }
+    }
+
+    println!("lenght= {:?}",monkevec.len());
 
     //let prod = 1; //<---part1
     let prod: i64 = monkevec.iter().map(|m| m.divisor).product();
@@ -110,4 +154,13 @@ fn main() {
         inspectionsheap.push(monkevec[monke_now].inspections)
     }
    println!("monke business: {:?}",inspectionsheap.pop().unwrap()*inspectionsheap.pop().unwrap());
+   // 17673687232
+}
+
+// The output is wrapped in a Result to allow matching on errors
+// Returns an Iterator to the Reader of the lines of the file.
+fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
+where P: AsRef<Path>, {
+    let file = File::open(filename)?;
+    Ok(io::BufReader::new(file).lines())
 }
