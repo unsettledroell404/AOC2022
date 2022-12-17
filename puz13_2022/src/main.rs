@@ -99,6 +99,11 @@ let file = fs::read_to_string("./input_test.txt").unwrap().replace("\r","");
 println!("correct indexes (test): {:}",part1(&file));
 let file = fs::read_to_string("./input.txt").unwrap().replace("\r","");
 println!("correct indexes (real): {:}", part1(&file));
+
+let file = fs::read_to_string("./input_test.txt").unwrap().replace("\r","");
+println!("result part 2 (test): {:}",part2(&file));
+let file = fs::read_to_string("./input.txt").unwrap().replace("\r","");
+println!("result part 2  (real): {:}", part2(&file));
 }
 
 pub fn part1(input: &str) -> String{
@@ -114,4 +119,31 @@ pub fn part1(input: &str) -> String{
     }) //need to derive partial comp for this
     .map(|v| v+1) //to get the indexes correct
     .sum::<usize>().to_string()  //sum the indexes 
+}
+
+pub fn part2(input: &str) -> String {
+    let (_, pair_list) = pairs(input).unwrap();
+    let packet_2 = Packet::List(vec![Packet::List(vec![ //make packet 2
+        Packet::Number(2),
+    ])]);
+    let packet_6 = Packet::List(vec![Packet::List(vec![ //make packet 6
+        Packet::Number(6),
+    ])]);
+    let mut packets: Vec<&Packet> = pair_list
+        .iter()
+        .flat_map(|Pair { left, right }| [left, right])
+        .chain([&packet_2, &packet_6])//chain to the iterator over the packets
+        .collect();
+    packets.sort();//sort the packets
+    let index_2 = packets
+        .iter()
+        .enumerate()
+        .find(|(_i, packet)| packet == &&&packet_2)//find packet 2, nice &&&
+        .unwrap();
+    let index_6 = packets
+        .iter()
+        .enumerate()
+        .find(|(_i, packet)| packet == &&&packet_6)//find packet 6, nice &&&
+        .unwrap();
+    ((index_2.0 + 1) * (index_6.0 + 1)).to_string()
 }
