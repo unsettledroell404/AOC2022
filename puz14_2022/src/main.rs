@@ -4,6 +4,7 @@ use std::io::{self, BufRead};
 use std::path::Path;
 use std::fs;
 
+
 #[derive(Debug, Default)]
 struct Grid{
 	grid: Vec<Vec<char>>,
@@ -77,7 +78,6 @@ impl Grid{
 		let mut ymax :usize = 0;
 		let lines: Vec<&str> = input.split("\n").collect();
 			for line in lines{
-				println!("{:?}",&line);
 			//iterate through to find min and max of x and y
 			//collect the lines in a vector
 			//let binding =  INPUT.replace("->",",");
@@ -92,7 +92,6 @@ impl Grid{
 				if xy[0]>xmax{xmax = xy[0];}
 				if xy[0]<xmin{xmin = xy[0];}
 				if xy[1]>ymax{ymax = xy[1];}
-				println!("{:?}",xy);
 				new_rock_vector.push(xy);
 			}
 			let new_rock = Rock::new_Rock(new_rock_vector);
@@ -102,8 +101,8 @@ impl Grid{
 
 		//add the floor part 2
 		ymax = ymax+2;
-		xmin = 0;//massive floor plox
-		xmax = 1000;
+		xmin = 250;//massive floor plox
+		xmax = 750;
 		let veccie: Vec<Vec<usize>> = Vec::from([Vec::from([xmin,ymax]),Vec::from([xmax,ymax])]);
 		let new_rock = Rock::new_Rock(veccie);//x1y1-x2y2
 		grid.rocks.push(new_rock);
@@ -172,7 +171,7 @@ let file = fs::read_to_string("./input.txt").unwrap().replace("\r","");
 	for i in 1..=100000{
 	if grid.drop_sand(500,0) != true{
 		//it panics there as soon as it overflows .. lol
-			println!("{:} succesful drops",i);
+			//println!("{:} succesful drops",i);
 		}
 		else{
 			println!("dropped at source at {:}, ending ..  ",i);
