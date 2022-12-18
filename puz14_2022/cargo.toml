@@ -1,0 +1,9 @@
+[package]
+name = "hello_AOC"
+version = "0.1.0"
+authors = ["Roel"]
+
+[dependencies]
+itertools = "0.10.5"
+nom = "7.1.1"
+tag = "0.1.0"
