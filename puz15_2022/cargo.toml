@@ -1,0 +1,7 @@
+[package]
+name = "hello_AOC"
+version = "0.1.0"
+authors = ["Roel"]
+
+[dependencies]
+cached = "0.41.0"
